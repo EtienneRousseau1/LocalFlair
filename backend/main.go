@@ -133,11 +133,11 @@ func (r *Repository) GetProductByID(context *fiber.Ctx) error {
 // makes this  astruct method
 func (r *Repository) SetupRoutes(app *fiber.App) {
 	api := app.Group("/api")
-	api.Post("/create_artisans", r.CreateArtisan) // method to create artisans
-	api.Post("/create_products", r.CreateProduct) // method to create a product
-	api.Delete("delte_book/:Id", r.DeleteProduct) // method to delete product
-	api.Get("/get_books/:id", r.GetProductByID)   // get product by Id
-	api.Get("/products", r.GetProducts)           // Get all Products
+	api.Post("/create_artisans", r.CreateArtisan)      // method to create artisans
+	api.Post("/create_products", r.CreateProduct)      // method to create a product
+	api.Delete("/delete_product/:id", r.DeleteProduct) // method to delete product
+	api.Get("/get_product/:id", r.GetProductByID)      // get product by Id
+	api.Get("/products", r.GetProducts)                // Get all Products
 }
 
 func main() {
