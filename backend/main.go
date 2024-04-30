@@ -49,6 +49,7 @@ func (r *Repository) CreateArtisan(context *fiber.Ctx) error {
 	return nil
 }
 func (r *Repository) CreateProduct(context *fiber.Ctx) error {
+
 	product := Product{}
 	err := context.BodyParser(&product)
 
@@ -68,7 +69,8 @@ func (r *Repository) CreateProduct(context *fiber.Ctx) error {
 }
 
 func (r *Repository) GetProducts(context *fiber.Ctx) error {
-	productModels := &[]models.Product{}
+
+	productModels := &[]models.Products{}
 
 	err := r.DB.Find(productModels).Error
 	if err != nil {
@@ -84,8 +86,8 @@ func (r *Repository) GetProducts(context *fiber.Ctx) error {
 }
 
 func (r *Repository) DeleteProduct(context *fiber.Ctx) error {
-	productModel := models.Product{}
 	id := context.Params("id")
+	productModel := models.Products{}
 	if id == "" {
 		context.Status(http.StatusInternalServerError).JSON(&fiber.Map{
 			"message": "id cannot be empty",
@@ -106,8 +108,8 @@ func (r *Repository) DeleteProduct(context *fiber.Ctx) error {
 }
 
 func (r *Repository) GetProductByID(context *fiber.Ctx) error {
-	productModel := &models.Product{}
 	id := context.Params("id")
+	productModel := &models.Products{}
 
 	if id == "" {
 		context.Status(http.StatusInternalServerError).JSON(&fiber.Map{
