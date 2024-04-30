@@ -5,8 +5,6 @@
  - Introduction
  - Requirements
  - Installation
- - Configuration
- - Troubleshooting
  - Maintainers
 ## Introduction
 
@@ -54,3 +52,7 @@ _Below is an example of how you can instruct your audience on installing and set
    ```
 
 Create your own .env folder connecting a database to it
+
+### Maintainers
+
+Etienne Rousseau - 2nd Year UC Davis erousseau@ucdavis.edu
