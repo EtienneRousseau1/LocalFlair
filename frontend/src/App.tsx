@@ -1,13 +1,15 @@
 import React from 'react';
 import ArtisanProfile from './components/ArtisanProfile';
 import ProductListing from './components/ProductListing';
+import Header from './components/Header';
 
 const App: React.FC = () => {
     const sampleArtisan = {
         id: 1,
         name: 'John Doe',
         location: 'City, Country',
-        description: 'Description here...'
+        description: 'Description here...',
+        imageUrl: "image",
     };
 
     const sampleProducts = [
@@ -17,6 +19,7 @@ const App: React.FC = () => {
 
     return (
         <div>
+            <Header />
             <ArtisanProfile artisan={sampleArtisan} />
             <ProductListing products={sampleProducts} />
         </div>
