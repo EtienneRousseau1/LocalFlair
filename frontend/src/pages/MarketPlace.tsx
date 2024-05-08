@@ -1,14 +1,6 @@
 import React from 'react';
-import ArtisanProfile from '../components/ArtisanProfile'; // Import the ArtisanProfile component
-import ProductListing from '../components/ProductListing'; // Import the ProductListing component
-
-interface Artisan {
-    id: number;
-    name: string;
-    location: string;
-    description: string;
-    imageUrl: string;
-}
+import ArtisanProfile from '../components/ArtisanProfile';  // Adjust path as necessary
+import ProductListing from '../components/ProductListing';  // Adjust path as necessary
 
 interface Product {
     id: number;
@@ -17,22 +9,34 @@ interface Product {
     price: number;
 }
 
-interface MarketplaceProps {
-    artisan: Artisan;
+interface Artisan {
+    id: number;
+    name: string;
+    location: string;
+    description: string;
+    imageUrl: string;
     products: Product[];
 }
 
-const Marketplace: React.FC<MarketplaceProps> = ({ artisan, products }) => {
+interface MarketplaceProps {
+    artisans: Artisan[];
+}
+
+const Marketplace: React.FC<MarketplaceProps> = ({ artisans }) => {
     return (
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex flex-wrap -mx-4">
-                <div className="w-full md:w-1/3 px-4">
-                    <ArtisanProfile artisan={artisan} />
+            {artisans.map(artisan => (
+                <div key={artisan.id} className="mb-8">
+                    <div className="flex flex-wrap -mx-4">
+                        <div className="w-full md:w-1/3 px-4">
+                            <ArtisanProfile artisan={artisan} />
+                        </div>
+                        <div className="w-full md:w-2/3 px-4">
+                            <ProductListing products={artisan.products} />
+                        </div>
+                    </div>
                 </div>
-                <div className="w-full md:w-2/3 px-4">
-                    <ProductListing products={products} />
-                </div>
-            </div>
+            ))}
         </div>
     );
 };
