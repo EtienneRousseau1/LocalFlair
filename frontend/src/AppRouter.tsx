@@ -1,21 +1,57 @@
-// import React from 'react';
-// import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
-// import MarketPlace from './pages/MarketPlace';  // Adjust the path as needed
-//      // Adjust the path as needed
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import Market from './pages/MarketPlace';
+const App = () => {
 
-// const AppRouter: React.FC = () => {
-//     return (
-//         <Router>
-//             <Switch>
-//                 <Route exact path="/" render={() => <Redirect to="/market" />} />
-//                 <Route path="/market" component={MarketPlace} />
-//                 <Route path="/form" component={FormPage} />
-//                 <Route path="/login" component={LoginPage} />
-//                 {/* Optionally add a route for handling 404 Not Found */}
-//                 <Route path="*" render={() => <div>404 Not Found</div>} />
-//             </Switch>
-//         </Router>
-//     );
-// };
 
-// export default AppRouter;
+const artisans = [
+    {
+        id: 1,
+        name: "John Doe",
+        location: "New York, NY",
+        description: "Experienced artisan specializing in handmade crafts.",
+        imageUrl: "https://via.placeholder.com/150",
+        products: [
+            {
+                id: 1,
+                name: "Handmade Vase",
+                description: "Beautifully crafted vase perfect for any home.",
+                price: 29.99
+            },
+            {
+                id: 2,
+                name: "Decorative Pillow",
+                description: "Brings color and comfort to your living space.",
+                price: 19.99
+            }
+        ]
+    },
+    {
+        id: 2,
+        name: "Jane Smith",
+        location: "San Francisco, CA",
+        description: "Artisan specializing in sustainable materials.",
+        imageUrl: "https://via.placeholder.com/150",
+        products: [
+            {
+                id: 3,
+                name: "Recycled Clock",
+                description: "Eco-friendly clock made from recycled materials.",
+                price: 45.00
+            }
+        ]
+    }
+];
+
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<Navigate to="/market" />} />
+        <Route path="/market" element={<Market  artisans={artisans} />} />
+        
+      </Routes>
+    </Router>
+  );
+};
+
+export default App;
