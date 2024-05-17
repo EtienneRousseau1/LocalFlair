@@ -9,7 +9,6 @@ const App: React.FC = () => {
   
     return (
         <div>
-            <Header />
             <AppRouter />
         </div>
     );
