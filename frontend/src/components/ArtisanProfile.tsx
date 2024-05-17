@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 interface Artisan {
     id: number;
@@ -15,6 +16,7 @@ const ArtisanProfile: React.FC<{ artisan: Artisan }> = ({ artisan }) => {
             <h2 className="text-xl font-bold">{artisan.name}</h2>
             <p className="text-gray-600">{artisan.location}</p>
             <p className="text-gray-800">{artisan.description}</p>
+            <Link to={`/artisan/${artisan.id}`} className="text-indigo-500 hover:underline mt-4 block">View Products</Link>
         </div>
     );
 };

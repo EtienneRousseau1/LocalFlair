@@ -1,15 +1,18 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
+
 
 const Header = () => {
+    const navigate = useNavigate();
     const onLogin = () => {
         return null
     };
     const onMarketplace = () => {
-        return null
+        navigate('/market');
     };
 
     const onForum = () => {
-        return null
+        navigate('/forum')
     };
 
     return (

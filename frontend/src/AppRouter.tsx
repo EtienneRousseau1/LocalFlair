@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import Market from './pages/MarketPlace';
+import ArtisanPage from './pages/ArtisanPage';
 const App = () => {
 
 
@@ -48,7 +49,7 @@ const artisans = [
       <Routes>
         <Route path="/" element={<Navigate to="/market" />} />
         <Route path="/market" element={<Market  artisans={artisans} />} />
-        
+        <Route path="/artisan/:id" element={<ArtisanPage artisans={artisans} />} />
       </Routes>
     </Router>
   );
