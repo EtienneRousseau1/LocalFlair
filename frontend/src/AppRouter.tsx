@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import Market from './pages/MarketPlace';
 import ArtisanPage from './pages/ArtisanPage';
+import Header from './components/Header';
 const App = () => {
 
 
@@ -46,6 +47,7 @@ const artisans = [
 
   return (
     <Router>
+      <Header />
       <Routes>
         <Route path="/" element={<Navigate to="/market" />} />
         <Route path="/market" element={<Market  artisans={artisans} />} />

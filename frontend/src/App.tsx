@@ -6,10 +6,10 @@ import Marketplace from './pages/MarketPlace';
 import AppRouter from './AppRouter';  
 
 const App: React.FC = () => {
-  
+  // Testing out Commits Continued
     return (
-        <div>
-            <Header />
+        <div>  
+
             <AppRouter />
         </div>
     );
