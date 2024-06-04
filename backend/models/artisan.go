@@ -3,26 +3,24 @@ package models
 import "gorm.io/gorm"
 
 type Artisans struct {
-	ID       uint    `gorm:"primary key;autoIncrement" json:"id"`
-	Name     *string `json:"name"`
-	Location *string `json:"location"`
-	// Add more artisan attributes as needed
+	ID       uint       `gorm:"primaryKey;autoIncrement" json:"id"`
+	Name     *string    `json:"name"`
+	Location *string    `json:"location"`
+	Products []Products `json:"products" gorm:"foreignKey:ArtisanID"`
 }
 
 type Products struct {
-	ID          uint    `gorm:"primary key;autoIncrement" json:"id"`
+	ID          uint    `gorm:"primaryKey;autoIncrement" json:"id"`
 	Name        *string `json:"name"`
 	Description *string `json:"description"`
 	Price       float64 `json:"price"`
-	// Add more product attributes as needed
+	ArtisanID   uint    `json:"artisan_id"`
 }
 
 func MigrateArtisans(db *gorm.DB) error {
-	err := db.AutoMigrate(&Artisans{})
-	return err
+	return db.AutoMigrate(&Artisans{})
 }
 
 func MigrateProducts(db *gorm.DB) error {
-	err := db.AutoMigrate(&Products{})
-	return err
+	return db.AutoMigrate(&Products{})
 }
