@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-d
 import Market from './pages/MarketPlace';
 import ArtisanPage from './pages/ArtisanPage';
 import Header from './components/Header';
+import CartPage from './pages/CartPage';
+import { LocalFlair } from './context/LocalFlairContext';
 const App = () => {
 
 
@@ -47,12 +49,15 @@ const artisans = [
 
   return (
     <Router>
+      <LocalFlair> 
       <Header />
       <Routes>
         <Route path="/" element={<Navigate to="/market" />} />
         <Route path="/market" element={<Market  artisans={artisans} />} />
         <Route path="/artisan/:id" element={<ArtisanPage artisans={artisans} />} />
+        <Route path = "/cart" element={<CartPage />} />
       </Routes>
+      </LocalFlair>
     </Router>
   );
 };

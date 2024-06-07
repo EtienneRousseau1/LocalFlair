@@ -11,8 +11,8 @@ const Header = () => {
         navigate('/market');
     };
 
-    const onForum = () => {
-        navigate('/forum')
+    const onCart = () => {
+        navigate('/cart')
     };
 
     return (
@@ -26,7 +26,7 @@ const Header = () => {
                         <div className="hidden md:block">
                             <div className="ml-10 flex items-baseline space-x-4">
                                 <button onClick={onMarketplace} className="px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700 focus:outline-none focus:bg-gray-700">Marketplace</button>
-                                <button onClick={onForum} className="px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700 focus:outline-none focus:bg-gray-700">Forum</button>
+                                <button onClick={onCart} className="px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700 focus:outline-none focus:bg-gray-700">Cart</button>
                             </div>
                         </div>
                     </div>
