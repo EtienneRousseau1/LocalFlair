@@ -10,10 +10,12 @@ const ProductListing: React.FC<{ products: Product[] }> = ({ products }) => {
     };
 
     if (!products || products.length === 0) {
-        return <div>No products available</div>;
+        return <div> <br />No products available</div>;
     }
 
     return (
+        <div>
+             <br /> 
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {products.map(product => (
@@ -33,6 +35,7 @@ const ProductListing: React.FC<{ products: Product[] }> = ({ products }) => {
                     </li>
                 ))}
             </ul>
+        </div>
         </div>
     );
 };
