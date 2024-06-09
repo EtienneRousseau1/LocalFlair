@@ -1,12 +1,18 @@
 import React from 'react';
 import { useLocalFlairContext } from '../context/LocalFlairContext';
-import {Product} from "../interface/Product"
+import { Product } from '../interface/Product';
 
 const ProductListing: React.FC<{ products: Product[] }> = ({ products }) => {
-    const {addSelectedProduct, selectedProducts} = useLocalFlairContext()
+    const { addSelectedProduct, selectedProducts } = useLocalFlairContext();
+
     const isProductSelected = (product: Product) => {
         return selectedProducts.some(selectedProduct => selectedProduct.id === product.id);
-      };
+    };
+
+    if (!products || products.length === 0) {
+        return <div>No products available</div>;
+    }
+
     return (
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -21,8 +27,8 @@ const ProductListing: React.FC<{ products: Product[] }> = ({ products }) => {
                                 onClick={() => addSelectedProduct(product)}
                                 disabled={isProductSelected(product)}
                             >
-                {isProductSelected(product) ? 'Added' : 'Add to Cart'}
-              </button>
+                                {isProductSelected(product) ? 'Added' : 'Add to Cart'}
+                            </button>
                         </div>
                     </li>
                 ))}

@@ -4,7 +4,8 @@ export interface Artisan {
     id: number;
     name: string;
     location: string;
-    description: string;
+    biography: string;
+    email: string;
     imageUrl: string;
     products: Product[];
 }

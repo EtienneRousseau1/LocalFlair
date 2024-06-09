@@ -67,7 +67,7 @@ const Login: React.FC = () => {
     return (
         <div className="flex justify-center items-center h-screen bg-gray-100">
             <div className="bg-white p-8 rounded-lg shadow-lg text-center max-w-md w-full">
-                <h2 className="text-2xl font-bold mb-6">Welcome to My App</h2>
+                <h2 className="text-2xl font-bold mb-6">Welcome to LocalFlair</h2>
                 {!user ? (
                     <>
                         <p className="mb-6">Please sign in to continue</p>

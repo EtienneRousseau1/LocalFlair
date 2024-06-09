@@ -1,15 +1,32 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect } from 'react';
 import { Artisan } from '../interface/Artisan';
+import BasicImage from "../image/BasicImage.png";
 
-const ArtisanProfile: React.FC<{ artisan: Artisan }> = ({ artisan }) => {
+interface ArtisanProfileProps {
+    artisan: Artisan;
+}
+
+const ArtisanProfile: React.FC<ArtisanProfileProps> = ({ artisan }) => {
+    useEffect(() => {
+        console.log('Profile picture URL:', artisan.imageUrl);
+    }, [artisan.imageUrl]);
+
+    const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+        e.currentTarget.src = BasicImage; // Fallback image URL from local assets
+    };
+
     return (
-        <div className="flex flex-col items-center p-4 shadow-lg rounded-lg">
-            <img src={artisan.imageUrl} alt={`Avatar`} className="w-24 h-24 rounded-full mb-4" />
-            <h2 className="text-xl font-bold">{artisan.name}</h2>
+        <div className="artisan-profile flex flex-col items-center">
+            <img 
+                src={artisan.imageUrl || BasicImage} // Use artisan.imageUrl or fallback to BasicImage if not provided
+                alt={`${artisan.name}'s profile`}
+                className="w-32 h-32 rounded-full mb-4"
+                onError={handleImageError}
+            />
+            <h2 className="text-2xl font-bold">{artisan.name}</h2>
+            <p className="text-gray-600">{artisan.biography}</p>
             <p className="text-gray-600">{artisan.location}</p>
-            <p className="text-gray-800">{artisan.description}</p>
-            <Link to={`/artisan/${artisan.id}`} className="text-indigo-500 hover:underline mt-4 block">View Products</Link>
+
         </div>
     );
 };

@@ -14,8 +14,9 @@ const artisans = [
         id: 1,
         name: "John Doe",
         location: "New York, NY",
-        description: "Experienced artisan specializing in handmade crafts.",
+        biography: "Experienced artisan specializing in handmade crafts.",
         imageUrl: "https://via.placeholder.com/150",
+        email: "etar2004@gmail.com",
         products: [
             {
                 id: 1,
@@ -35,8 +36,9 @@ const artisans = [
         id: 2,
         name: "Jane Smith",
         location: "San Francisco, CA",
-        description: "Artisan specializing in sustainable materials.",
+        biography: "Artisan specializing in sustainable materials.",
         imageUrl: "https://via.placeholder.com/150",
+        email: "etar2004@gmail.com",
         products: [
             {
                 id: 3,
@@ -54,8 +56,8 @@ const artisans = [
       <Header />
       <Routes>
         <Route path="/" element={<Navigate to="/market" />} />
-        <Route path="/market" element={<Market  artisans={artisans} />} />
-        <Route path="/artisan/:id" element={<ArtisanPage artisans={artisans} />} />
+        <Route path="/market" element={<Market   />} />
+        <Route path="/artisan/:id" element={<ArtisanPage  />} />
         <Route path = "/cart" element={<CartPage />} />
         <Route path = "/login" element={<Login />} />
       </Routes>

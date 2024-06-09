@@ -181,6 +181,52 @@ func (r *Repository) GetProductByID(context *fiber.Ctx) error {
 	return nil
 }
 
+func (r *Repository) GetArtisanByID(context *fiber.Ctx) error {
+	id := context.Params("id")
+	if id == "" {
+		context.Status(fiber.StatusBadRequest).JSON(&fiber.Map{"message": "artisan ID cannot be empty"})
+		return nil
+	}
+
+	artisan := &models.Artisans{}
+
+	// Convert id to uint
+	var artisanID uint
+	_, err := fmt.Sscanf(id, "%d", &artisanID)
+	if err != nil {
+		context.Status(fiber.StatusBadRequest).JSON(&fiber.Map{"message": "invalid artisan ID"})
+		return err
+	}
+
+	err = r.DB.Preload("Products").Where("id = ?", artisanID).First(artisan).Error
+	if err != nil {
+		context.Status(fiber.StatusBadRequest).JSON(&fiber.Map{"message": "could not get artisan"})
+		return err
+	}
+
+	context.Status(fiber.StatusOK).JSON(&fiber.Map{
+		"message": "artisan fetched successfully",
+		"data":    artisan,
+	})
+	return nil
+}
+
+func (r *Repository) GetArtisans(context *fiber.Ctx) error {
+	artisans := &[]models.Artisans{}
+
+	err := r.DB.Preload("Products").Find(artisans).Error
+	if err != nil {
+		context.Status(fiber.StatusBadRequest).JSON(&fiber.Map{"message": "could not get artisans"})
+		return err
+	}
+
+	context.Status(fiber.StatusOK).JSON(&fiber.Map{
+		"message": "artisans fetched successfully",
+		"data":    artisans,
+	})
+	return nil
+}
+
 func (r *Repository) LoginOrCreateArtisan(context *fiber.Ctx) error {
 	var request struct {
 		Email     string `json:"email"`
@@ -221,13 +267,14 @@ func (r *Repository) LoginOrCreateArtisan(context *fiber.Ctx) error {
 
 	return context.Status(fiber.StatusOK).JSON(&fiber.Map{"message": "artisan found", "data": artisan})
 }
-
 func (r *Repository) SetupRoutes(app *fiber.App) {
 	api := app.Group("/api")
 	api.Post("/login", r.LoginOrCreateArtisan)                       // Login or create artisan
 	api.Post("/artisans", r.CreateArtisan)                           // Create artisans
 	api.Post("/artisans/:artisanID/products", r.CreateProduct)       // Create a product for a specific artisan
 	api.Get("/artisans/:artisanID/products", r.GetProductsByArtisan) // Get products by artisan ID
+	api.Get("/artisans/:id", r.GetArtisanByID)                       // Get artisan by ID
+	api.Get("/artisans", r.GetArtisans)                              // Get artisans
 	api.Delete("/products/:id", r.DeleteProduct)                     // Delete product
 	api.Get("/products/:id", r.GetProductByID)                       // Get product by ID
 	api.Get("/products", r.GetProducts)                              // Get all products
