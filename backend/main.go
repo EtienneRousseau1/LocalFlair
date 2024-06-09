@@ -5,17 +5,19 @@ import (
 	"log"
 	"os"
 
-	"github.com/gofiber/fiber/v2"
-	"github.com/joho/godotenv"
-	"gorm.io/gorm"
-
 	"github.com/EtienneRousseau1/go-serverless/models"
 	"github.com/EtienneRousseau1/go-serverless/storage"
+	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/joho/godotenv"
+	"gorm.io/gorm"
 )
 
 type Artisans struct {
 	Name     *string    `json:"name"`
 	Location *string    `json:"location"`
+	Email    *string    `json:"email"`
+	Picture  *string    `json:"picture"`
 	Products []Products `json:"products" gorm:"foreignKey:ArtisanID"`
 }
 
@@ -178,8 +180,47 @@ func (r *Repository) GetProductByID(context *fiber.Ctx) error {
 	return nil
 }
 
+func (r *Repository) LoginOrCreateArtisan(context *fiber.Ctx) error {
+	var request struct {
+		Email    string `json:"email"`
+		Name     string `json:"name"`
+		Location string `json:"location"`
+		Picture  string `json:"picture"`
+	}
+
+	if err := context.BodyParser(&request); err != nil {
+		return context.Status(fiber.StatusBadRequest).JSON(&fiber.Map{"message": "invalid request"})
+	}
+
+	var artisan models.Artisans
+	if err := r.DB.Where("email = ?", request.Email).First(&artisan).Error; err != nil {
+		// User not found, create a new artisan
+		artisan = models.Artisans{
+			Name:     &request.Name,
+			Location: &request.Location,
+			Email:    &request.Email,
+			Picture:  &request.Picture,
+		}
+		if err := r.DB.Create(&artisan).Error; err != nil {
+			return context.Status(fiber.StatusInternalServerError).JSON(&fiber.Map{"message": "could not create artisan"})
+		}
+		return context.Status(fiber.StatusOK).JSON(&fiber.Map{"message": "artisan created", "data": artisan})
+	}
+
+	// User found, update artisan info
+	artisan.Name = &request.Name
+	artisan.Location = &request.Location
+	artisan.Picture = &request.Picture
+	if err := r.DB.Save(&artisan).Error; err != nil {
+		return context.Status(fiber.StatusInternalServerError).JSON(&fiber.Map{"message": "could not update artisan"})
+	}
+
+	return context.Status(fiber.StatusOK).JSON(&fiber.Map{"message": "artisan found", "data": artisan})
+}
+
 func (r *Repository) SetupRoutes(app *fiber.App) {
 	api := app.Group("/api")
+	api.Post("/login", r.LoginOrCreateArtisan)                       // Login or create artisan
 	api.Post("/artisans", r.CreateArtisan)                           // Create artisans
 	api.Post("/artisans/:artisanID/products", r.CreateProduct)       // Create a product for a specific artisan
 	api.Get("/artisans/:artisanID/products", r.GetProductsByArtisan) // Get products by artisan ID
@@ -221,6 +262,10 @@ func main() {
 	r := Repository{DB: db}
 
 	app := fiber.New()
+	app.Use(cors.New(cors.Config{
+		AllowOrigins: "*", // Change this to restrict origins if needed
+		AllowHeaders: "Origin, Content-Type, Accept",
+	}))
 	r.SetupRoutes(app)
 
 	port := os.Getenv("PORT")
