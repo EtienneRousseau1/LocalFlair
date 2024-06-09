@@ -1,10 +1,30 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { GoogleLogin, useGoogleLogin, googleLogout } from '@react-oauth/google';
 import axios from 'axios';
+import { useLocalFlairContext } from '../context/LocalFlairContext';
 
 const Login: React.FC = () => {
-    const [user, setUser] = useState<any>(null);
+    const { user, setUser } = useLocalFlairContext();
     const [profile, setProfile] = useState<any>(null);
+
+    useEffect(() => {
+        if (user) {
+            const fetchProfile = async () => {
+                try {
+                    const userInfo = await axios.get(`https://www.googleapis.com/oauth2/v3/userinfo`, {
+                        headers: {
+                            Authorization: `Bearer ${user.access_token}`,
+                        },
+                    });
+                    setProfile(userInfo.data);
+                } catch (error) {
+                    console.error('Failed to fetch user info:', error);
+                }
+            };
+
+            fetchProfile();
+        }
+    }, [user]);
 
     const login = useGoogleLogin({
         onSuccess: async (response) => {
@@ -19,14 +39,18 @@ const Login: React.FC = () => {
             setUser(response);
 
             // Send user info to backend
-            const backendResponse = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/login`, {
-                email: userInfo.data.email,
-                name: userInfo.data.name,
-                location: "Unknown", // or prompt user for location
-                picture: userInfo.data.picture
-            });
-
-            console.log('Backend Response:', backendResponse.data);
+            try {
+                const backendResponse = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/login`, {
+                    email: userInfo.data.email,
+                    name: userInfo.data.name,
+                    location: "Unknown", // or prompt user for location
+                    picture: userInfo.data.picture,
+                    biography: "Biography",
+                });
+                console.log('Backend Response:', backendResponse.data);
+            } catch (error) {
+                console.error('Failed to send user info to backend:', error);
+            }
         },
         onError: () => {
             console.log('Login Failed');
@@ -55,23 +79,25 @@ const Login: React.FC = () => {
                         </button>
                     </>
                 ) : (
-                    <>
-                        <div className="mb-6">
-                            <img
-                                src={profile.picture}
-                                alt="Profile"
-                                className="w-20 h-20 rounded-full mx-auto mb-4"
-                            />
-                            <p className="text-xl font-semibold">{profile.name}</p>
-                            <p className="text-gray-500">{profile.email}</p>
-                        </div>
-                        <button
-                            className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-                            onClick={handleLogout}
-                        >
-                            Sign Out
-                        </button>
-                    </>
+                    profile && (
+                        <>
+                            <div className="mb-6">
+                                <img
+                                    src={profile.picture}
+                                    alt="Profile"
+                                    className="w-20 h-20 rounded-full mx-auto mb-4"
+                                />
+                                <p className="text-xl font-semibold">{profile.name}</p>
+                                <p className="text-gray-500">{profile.email}</p>
+                            </div>
+                            <button
+                                className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+                                onClick={handleLogout}
+                            >
+                                Sign Out
+                            </button>
+                        </>
+                    )
                 )}
             </div>
         </div>

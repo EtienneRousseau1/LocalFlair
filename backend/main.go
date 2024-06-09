@@ -14,11 +14,12 @@ import (
 )
 
 type Artisans struct {
-	Name     *string    `json:"name"`
-	Location *string    `json:"location"`
-	Email    *string    `json:"email"`
-	Picture  *string    `json:"picture"`
-	Products []Products `json:"products" gorm:"foreignKey:ArtisanID"`
+	Name      *string    `json:"name"`
+	Location  *string    `json:"location"`
+	Email     *string    `json:"email"`
+	Picture   *string    `json:"picture"`
+	Biography *string    `json:"biography"`
+	Products  []Products `json:"products" gorm:"foreignKey:ArtisanID"`
 }
 
 type Products struct {
@@ -182,10 +183,11 @@ func (r *Repository) GetProductByID(context *fiber.Ctx) error {
 
 func (r *Repository) LoginOrCreateArtisan(context *fiber.Ctx) error {
 	var request struct {
-		Email    string `json:"email"`
-		Name     string `json:"name"`
-		Location string `json:"location"`
-		Picture  string `json:"picture"`
+		Email     string `json:"email"`
+		Name      string `json:"name"`
+		Location  string `json:"location"`
+		Biography string `json:"biography"`
+		Picture   string `json:"picture"`
 	}
 
 	if err := context.BodyParser(&request); err != nil {
@@ -196,10 +198,11 @@ func (r *Repository) LoginOrCreateArtisan(context *fiber.Ctx) error {
 	if err := r.DB.Where("email = ?", request.Email).First(&artisan).Error; err != nil {
 		// User not found, create a new artisan
 		artisan = models.Artisans{
-			Name:     &request.Name,
-			Location: &request.Location,
-			Email:    &request.Email,
-			Picture:  &request.Picture,
+			Name:      &request.Name,
+			Location:  &request.Location,
+			Biography: &request.Biography,
+			Email:     &request.Email,
+			Picture:   &request.Picture,
 		}
 		if err := r.DB.Create(&artisan).Error; err != nil {
 			return context.Status(fiber.StatusInternalServerError).JSON(&fiber.Map{"message": "could not create artisan"})
@@ -210,6 +213,7 @@ func (r *Repository) LoginOrCreateArtisan(context *fiber.Ctx) error {
 	// User found, update artisan info
 	artisan.Name = &request.Name
 	artisan.Location = &request.Location
+	artisan.Biography = &request.Biography
 	artisan.Picture = &request.Picture
 	if err := r.DB.Save(&artisan).Error; err != nil {
 		return context.Status(fiber.StatusInternalServerError).JSON(&fiber.Map{"message": "could not update artisan"})

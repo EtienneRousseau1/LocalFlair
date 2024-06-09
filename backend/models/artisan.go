@@ -3,12 +3,13 @@ package models
 import "gorm.io/gorm"
 
 type Artisans struct {
-	ID       uint       `gorm:"primaryKey;autoIncrement" json:"id"`
-	Name     *string    `json:"name"`
-	Email    *string    `json:"email"`
-	Picture  *string    `json:"picture"`
-	Location *string    `json:"location"`
-	Products []Products `json:"products" gorm:"foreignKey:ArtisanID"`
+	ID        uint       `gorm:"primaryKey;autoIncrement" json:"id"`
+	Name      *string    `json:"name"`
+	Email     *string    `json:"email"`
+	Picture   *string    `json:"picture"`
+	Location  *string    `json:"location"`
+	Biography *string    `json:"biography"`
+	Products  []Products `json:"products" gorm:"foreignKey:ArtisanID"`
 }
 
 type Products struct {

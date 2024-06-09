@@ -16,6 +16,8 @@ interface LocalFlairProps {
   removeSelectedProduct: (id: number) => void;
   selectedProducts: Product[];
   selectedProduct: Product | undefined;
+  user: any;
+  setUser: React.Dispatch<React.SetStateAction<any>>;
   clearAllProducts: () => void;
 }
 
@@ -26,7 +28,7 @@ const LocalFlairContext = createContext<LocalFlairProps | undefined>(undefined);
 export const LocalFlair: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [selectedProducts, setSelectedProducts] = useState<Product[]>([]);
   const [selectedProduct, setSelectedProduct] = useState<Product | undefined>(undefined);
-
+  const [user, setUser] = useState<any>(null);
   const addSelectedProduct = (product: Product) => {
     setSelectedProducts((prevProducts) => [...prevProducts, product]);
     return true;
@@ -43,6 +45,8 @@ export const LocalFlair: React.FC<{ children: ReactNode }> = ({ children }) => {
   return (
     <LocalFlairContext.Provider value={{
       selectedProducts,
+      user,
+      setUser,
       selectedProduct,
       setSelectedProduct,
       setSelectedProducts,

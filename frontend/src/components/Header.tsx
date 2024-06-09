@@ -1,9 +1,11 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useLocalFlairContext } from '../context/LocalFlairContext';
 
 
 const Header = () => {
     const navigate = useNavigate();
+    const { user } = useLocalFlairContext();
 
     const onMarketplace = () => {
         navigate('/market');
@@ -34,7 +36,7 @@ const Header = () => {
                     </div>
                     <div className="block">
                         <div className="ml-4 flex items-center md:ml-6">
-                            <button onClick={onLogin} className="px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700 focus:outline-none focus:bg-gray-700">Log in</button>
+                            <button onClick={onLogin} className="px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700 focus:outline-none focus:bg-gray-700"> {user ? "Log out" : "Log in"}</button>
                         </div>
                     </div>
                     <div className="-mr-2 flex md:hidden">
