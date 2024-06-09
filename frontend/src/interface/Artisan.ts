@@ -6,6 +6,6 @@ export interface Artisan {
     location: string;
     biography: string;
     email: string;
-    imageUrl: string;
+    picture: string;
     products: Product[];
 }

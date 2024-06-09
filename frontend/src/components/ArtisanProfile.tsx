@@ -10,14 +10,6 @@ interface ArtisanProfileProps {
 const ArtisanProfile: React.FC<ArtisanProfileProps> = ({ artisan }) => {
     const navigate = useNavigate();
 
-    useEffect(() => {
-        console.log('Profile picture URL:', artisan.imageUrl);
-    }, [artisan.imageUrl]);
-
-    const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
-        e.currentTarget.src = BasicImage; // Fallback image URL from local assets
-    };
-
     const handleClick = () => {
         navigate(`/artisan/${artisan.id}`);
     };
@@ -30,10 +22,9 @@ const ArtisanProfile: React.FC<ArtisanProfileProps> = ({ artisan }) => {
             onClick={handleClick}
         >
             <img 
-                src={artisan.imageUrl || BasicImage} // Use artisan.imageUrl or fallback to BasicImage if not provided
+                src={artisan.picture } // Use artisan.imageUrl or fallback to BasicImage if not provided
                 alt={`${artisan.name}'s profile`}
                 className="w-32 h-32 rounded-full mb-4"
-                onError={handleImageError}
             />
             <h2 className="text-2xl font-bold">{artisan.name}</h2>
             <p className="text-gray-600">{artisan.biography}</p>

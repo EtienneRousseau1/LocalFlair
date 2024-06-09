@@ -19,6 +19,10 @@ const Header = () => {
         navigate('/login');
     }
 
+    const onEdit = () => {
+        navigate('/edit')
+    }
+
     return (
         <header className="bg-gray-800 text-white">
             <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -31,6 +35,7 @@ const Header = () => {
                             <div className="ml-10 flex items-baseline space-x-4">
                                 <button onClick={onMarketplace} className="px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700 focus:outline-none focus:bg-gray-700">Marketplace</button>
                                 <button onClick={onCart} className="px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700 focus:outline-none focus:bg-gray-700">Cart</button>
+                                <button onClick={onEdit} className="px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700 focus:outline-none focus:bg-gray-700">Edit Profile</button>
                             </div>
                         </div>
                     </div>
@@ -38,6 +43,7 @@ const Header = () => {
                         <div className="ml-4 flex items-center md:ml-6">
                             <button onClick={onLogin} className="px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700 focus:outline-none focus:bg-gray-700"> {user ? "Log out" : "Log in"}</button>
                         </div>
+                
                     </div>
                     <div className="-mr-2 flex md:hidden">
                         <button type="button" className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none focus:bg-gray-700">

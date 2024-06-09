@@ -6,6 +6,7 @@ interface Product {
   name: string;
   description: string;
   price: number;
+  artisan_id: number;
 }
 
 // Interface for LocalFlairProps
@@ -17,6 +18,8 @@ interface LocalFlairProps {
   selectedProducts: Product[];
   selectedProduct: Product | undefined;
   user: any;
+  userId: string | null;
+  setUserId: React.Dispatch<React.SetStateAction<string | null>>;
   setUser: React.Dispatch<React.SetStateAction<any>>;
   clearAllProducts: () => void;
 }
@@ -29,6 +32,8 @@ export const LocalFlair: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [selectedProducts, setSelectedProducts] = useState<Product[]>([]);
   const [selectedProduct, setSelectedProduct] = useState<Product | undefined>(undefined);
   const [user, setUser] = useState<any>(null);
+  const [userId, setUserId] = useState<string | null>(null);
+
   const addSelectedProduct = (product: Product) => {
     setSelectedProducts((prevProducts) => [...prevProducts, product]);
     return true;
@@ -47,6 +52,8 @@ export const LocalFlair: React.FC<{ children: ReactNode }> = ({ children }) => {
       selectedProducts,
       user,
       setUser,
+      setUserId,
+      userId,
       selectedProduct,
       setSelectedProduct,
       setSelectedProducts,

@@ -6,50 +6,8 @@ import Header from './components/Header';
 import CartPage from './pages/CartPage';
 import Login from "./pages/LogIn"
 import { LocalFlair } from './context/LocalFlairContext';
+import EditPage from './pages/EditPage';
 const App = () => {
-
-
-const artisans = [
-    {
-        id: 1,
-        name: "John Doe",
-        location: "New York, NY",
-        biography: "Experienced artisan specializing in handmade crafts.",
-        imageUrl: "https://via.placeholder.com/150",
-        email: "etar2004@gmail.com",
-        products: [
-            {
-                id: 1,
-                name: "Handmade Vase",
-                description: "Beautifully crafted vase perfect for any home.",
-                price: 29.99
-            },
-            {
-                id: 2,
-                name: "Decorative Pillow",
-                description: "Brings color and comfort to your living space.",
-                price: 19.99
-            }
-        ]
-    },
-    {
-        id: 2,
-        name: "Jane Smith",
-        location: "San Francisco, CA",
-        biography: "Artisan specializing in sustainable materials.",
-        imageUrl: "https://via.placeholder.com/150",
-        email: "etar2004@gmail.com",
-        products: [
-            {
-                id: 3,
-                name: "Recycled Clock",
-                description: "Eco-friendly clock made from recycled materials.",
-                price: 45.00
-            }
-        ]
-    }
-];
-
   return (
     <Router>
       <LocalFlair> 
@@ -60,6 +18,7 @@ const artisans = [
         <Route path="/artisan/:id" element={<ArtisanPage  />} />
         <Route path = "/cart" element={<CartPage />} />
         <Route path = "/login" element={<Login />} />
+        <Route path = "/edit" element={<EditPage />} />
       </Routes>
       </LocalFlair>
     </Router>

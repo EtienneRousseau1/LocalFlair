@@ -4,7 +4,7 @@ import axios from 'axios';
 import { useLocalFlairContext } from '../context/LocalFlairContext';
 
 const Login: React.FC = () => {
-    const { user, setUser } = useLocalFlairContext();
+    const { user, setUser, userId, setUserId,  } = useLocalFlairContext();
     const [profile, setProfile] = useState<any>(null);
 
     useEffect(() => {
@@ -16,6 +16,7 @@ const Login: React.FC = () => {
                             Authorization: `Bearer ${user.access_token}`,
                         },
                     });
+                   
                     setProfile(userInfo.data);
                 } catch (error) {
                     console.error('Failed to fetch user info:', error);
@@ -24,7 +25,7 @@ const Login: React.FC = () => {
 
             fetchProfile();
         }
-    }, [user]);
+    }, [user, setProfile]);
 
     const login = useGoogleLogin({
         onSuccess: async (response) => {
@@ -35,6 +36,7 @@ const Login: React.FC = () => {
                 },
             });
             console.log('User Info:', userInfo.data);
+          
             setProfile(userInfo.data);
             setUser(response);
 
@@ -48,6 +50,12 @@ const Login: React.FC = () => {
                     biography: "Biography",
                 });
                 console.log('Backend Response:', backendResponse.data);
+
+                // Set userId from backend response
+                if (backendResponse.data && backendResponse.data.data && backendResponse.data.data.id) {
+                    setUserId(backendResponse.data.data.id);
+                    console.log("id from backend:", backendResponse.data.data.id);
+                }
             } catch (error) {
                 console.error('Failed to send user info to backend:', error);
             }
@@ -57,10 +65,17 @@ const Login: React.FC = () => {
         },
     });
 
+    useEffect(() => {
+        if (userId !== null) {
+            console.log("id from state:", userId);
+        }
+    }, [userId]);
+
     const handleLogout = () => {
         googleLogout();
         setUser(null);
         setProfile(null);
+        setUserId(null);
         console.log('User logged out');
     };
 
