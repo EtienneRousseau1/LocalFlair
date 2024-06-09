@@ -1,13 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-
-interface Artisan {
-    id: number;
-    name: string;
-    location: string;
-    description: string;
-    imageUrl: string  // Assuming a new field for the avatar image URL
-}
+import { Artisan } from '../interface/Artisan';
 
 const ArtisanProfile: React.FC<{ artisan: Artisan }> = ({ artisan }) => {
     return (

@@ -2,22 +2,8 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 import ArtisanProfile from '../components/ArtisanProfile';  // Adjust path as necessary
 import ProductListing from '../components/ProductListing';  // Adjust path as necessary
+import {Artisan} from "../interface/Artisan"
 
-interface Product {
-    id: number;
-    name: string;
-    description: string;
-    price: number;
-}
-
-interface Artisan {
-    id: number;
-    name: string;
-    location: string;
-    description: string;
-    imageUrl: string;
-    products: Product[];
-}
 
 interface ArtisanPageProps {
     artisans: Artisan[];

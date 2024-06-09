@@ -4,9 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 const Header = () => {
     const navigate = useNavigate();
-    const onLogin = () => {
-        return null
-    };
+
     const onMarketplace = () => {
         navigate('/market');
     };
@@ -15,13 +13,17 @@ const Header = () => {
         navigate('/cart')
     };
 
+    const onLogin = () => {
+        navigate('/login');
+    }
+
     return (
         <header className="bg-gray-800 text-white">
             <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center justify-between h-16">
                     <div className="flex items-center">
                         <div className="flex-shrink-0">
-                            <span className="text-xl font-bold">Local Flair</span>
+                            <span className="text-xl font-bold" onClick={onMarketplace}> Local Flair</span>
                         </div>
                         <div className="hidden md:block">
                             <div className="ml-10 flex items-baseline space-x-4">

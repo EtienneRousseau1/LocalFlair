@@ -4,6 +4,7 @@ import Market from './pages/MarketPlace';
 import ArtisanPage from './pages/ArtisanPage';
 import Header from './components/Header';
 import CartPage from './pages/CartPage';
+import Login from "./pages/LogIn"
 import { LocalFlair } from './context/LocalFlairContext';
 const App = () => {
 
@@ -56,6 +57,7 @@ const artisans = [
         <Route path="/market" element={<Market  artisans={artisans} />} />
         <Route path="/artisan/:id" element={<ArtisanPage artisans={artisans} />} />
         <Route path = "/cart" element={<CartPage />} />
+        <Route path = "/login" element={<Login />} />
       </Routes>
       </LocalFlair>
     </Router>
