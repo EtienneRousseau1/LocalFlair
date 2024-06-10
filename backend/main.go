@@ -303,6 +303,44 @@ func (r *Repository) UpdateProduct(context *fiber.Ctx) error {
 	return context.Status(fiber.StatusOK).JSON(&fiber.Map{"message": "product updated successfully", "data": existingProduct})
 }
 
+func (r *Repository) UpdateArtisan(context *fiber.Ctx) error {
+	artisanId := context.Params("id")
+	if artisanId == "" {
+		return context.Status(fiber.StatusBadRequest).JSON(&fiber.Map{"message": "artisan ID cannot be empty"})
+	}
+
+	artisan := models.Artisans{}
+	if err := context.BodyParser(&artisan); err != nil {
+		return context.Status(fiber.StatusUnprocessableEntity).JSON(&fiber.Map{"message": "request failed"})
+	}
+
+	// Convert artisanId to uint
+	var id uint
+	if _, err := fmt.Sscanf(artisanId, "%d", &id); err != nil {
+		return context.Status(fiber.StatusBadRequest).JSON(&fiber.Map{"message": "invalid artisan ID"})
+	}
+
+	// Find existing artisan
+	existingArtisan := models.Artisans{}
+	if err := r.DB.Where("id = ?", id).First(&existingArtisan).Error; err != nil {
+		return context.Status(fiber.StatusNotFound).JSON(&fiber.Map{"message": "artisan not found"})
+	}
+
+	// Update artisan fields
+	existingArtisan.Name = artisan.Name
+	existingArtisan.Biography = artisan.Biography
+	existingArtisan.Email = artisan.Email
+	existingArtisan.Location = artisan.Location
+	existingArtisan.Picture = artisan.Picture
+
+	// Save updated artisan
+	if err := r.DB.Save(&existingArtisan).Error; err != nil {
+		return context.Status(fiber.StatusInternalServerError).JSON(&fiber.Map{"message": "could not update artisan"})
+	}
+
+	return context.Status(fiber.StatusOK).JSON(&fiber.Map{"message": "artisan updated successfully", "data": existingArtisan})
+}
+
 func (r *Repository) SetupRoutes(app *fiber.App) {
 	api := app.Group("/api")
 	api.Post("/login", r.LoginOrCreateArtisan)                       // Login or create artisan
@@ -315,6 +353,7 @@ func (r *Repository) SetupRoutes(app *fiber.App) {
 	api.Get("/products/:id", r.GetProductByID)                       // Get product by ID
 	api.Get("/products", r.GetProducts)                              // Get all products
 	api.Put("/products/:id", r.UpdateProduct)                        // Update product by ID
+	api.Put("/artisans/:id", r.UpdateArtisan)                        // Update artisan by ID
 }
 
 func main() {

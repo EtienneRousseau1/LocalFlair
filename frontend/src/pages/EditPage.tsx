@@ -67,7 +67,7 @@ const EditPage: React.FC = () => {
         e.preventDefault();
         if (artisan) {
             try {
-                await axios.put(`${process.env.REACT_APP_BACKEND_URL}/artisans/${artisan.id}`, artisan);
+                await axios.put(`${process.env.REACT_APP_BACKEND_URL}/artisans/${userId}`, artisan);
                 alert('Profile updated successfully');
             } catch (err) {
                 console.error('Error updating profile:', err);
