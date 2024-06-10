@@ -267,6 +267,42 @@ func (r *Repository) LoginOrCreateArtisan(context *fiber.Ctx) error {
 
 	return context.Status(fiber.StatusOK).JSON(&fiber.Map{"message": "artisan found", "data": artisan})
 }
+func (r *Repository) UpdateProduct(context *fiber.Ctx) error {
+	productID := context.Params("id")
+	if productID == "" {
+		return context.Status(fiber.StatusBadRequest).JSON(&fiber.Map{"message": "product ID cannot be empty"})
+	}
+
+	product := models.Products{}
+	if err := context.BodyParser(&product); err != nil {
+		return context.Status(fiber.StatusUnprocessableEntity).JSON(&fiber.Map{"message": "request failed"})
+	}
+
+	// Convert productID to uint
+	var id uint
+	if _, err := fmt.Sscanf(productID, "%d", &id); err != nil {
+		return context.Status(fiber.StatusBadRequest).JSON(&fiber.Map{"message": "invalid product ID"})
+	}
+
+	// Find existing product
+	existingProduct := models.Products{}
+	if err := r.DB.Where("id = ?", id).First(&existingProduct).Error; err != nil {
+		return context.Status(fiber.StatusNotFound).JSON(&fiber.Map{"message": "product not found"})
+	}
+
+	// Update product fields
+	existingProduct.Name = product.Name
+	existingProduct.Description = product.Description
+	existingProduct.Price = product.Price
+
+	// Save updated product
+	if err := r.DB.Save(&existingProduct).Error; err != nil {
+		return context.Status(fiber.StatusInternalServerError).JSON(&fiber.Map{"message": "could not update product"})
+	}
+
+	return context.Status(fiber.StatusOK).JSON(&fiber.Map{"message": "product updated successfully", "data": existingProduct})
+}
+
 func (r *Repository) SetupRoutes(app *fiber.App) {
 	api := app.Group("/api")
 	api.Post("/login", r.LoginOrCreateArtisan)                       // Login or create artisan
@@ -278,6 +314,7 @@ func (r *Repository) SetupRoutes(app *fiber.App) {
 	api.Delete("/products/:id", r.DeleteProduct)                     // Delete product
 	api.Get("/products/:id", r.GetProductByID)                       // Get product by ID
 	api.Get("/products", r.GetProducts)                              // Get all products
+	api.Put("/products/:id", r.UpdateProduct)                        // Update product by ID
 }
 
 func main() {
@@ -316,6 +353,7 @@ func main() {
 	app.Use(cors.New(cors.Config{
 		AllowOrigins: "*", // Change this to restrict origins if needed
 		AllowHeaders: "Origin, Content-Type, Accept",
+		AllowMethods: "GET,POST,PUT,DELETE",
 	}))
 	r.SetupRoutes(app)
 

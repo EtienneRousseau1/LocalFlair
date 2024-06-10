@@ -1,20 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useLocalFlairContext } from '../context/LocalFlairContext';
 import { Artisan } from '../interface/Artisan';
 import { Product } from '../interface/Product';
 
 const EditPage: React.FC = () => {
-    const { user, userId} = useLocalFlairContext();
+    const { user, userId } = useLocalFlairContext();
     const [artisan, setArtisan] = useState<Artisan | null>(null);
     const [newProduct, setNewProduct] = useState<Product>({
         id: 0,
         name: '',
         description: '',
         price: 0,
-        artisan_id: parseInt(userId || "0")
+        artisanID: parseInt(userId || "0")
     });
+    const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const navigate = useNavigate();
@@ -35,7 +36,7 @@ const EditPage: React.FC = () => {
                     return;
                 }
                 setArtisan(fetchedArtisan);
-                setNewProduct(prev => ({ ...prev, artisan_id: fetchedArtisan.id }));
+                setNewProduct(prev => ({ ...prev, artisanID: fetchedArtisan.id }));
             } catch (err) {
                 setError('Failed to fetch artisan data');
                 console.error('Error fetching artisan data:', err);
@@ -52,22 +53,14 @@ const EditPage: React.FC = () => {
         setArtisan(prev => prev ? { ...prev, [name]: value } : null);
     };
 
-    const handleProductChange = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleProductChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
-        setArtisan(prev => {
-            if (prev) {
-                const updatedProducts = prev.products.map((product, i) => (
-                    i === index ? { ...product, [name]: value } : product
-                ));
-                return { ...prev, products: updatedProducts };
-            }
-            return null;
-        });
+        setSelectedProduct(prev => prev ? { ...prev, [name]: name === 'price' ? parseFloat(value) : value } : null);
     };
 
     const handleNewProductChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
-        setNewProduct(prev => ({ ...prev, [name]: value }));
+        setNewProduct(prev => ({ ...prev, [name]: name === 'price' ? parseFloat(value) : value }));
     };
 
     const handleProfileSubmit = async (e: React.FormEvent) => {
@@ -85,13 +78,17 @@ const EditPage: React.FC = () => {
 
     const handleProductSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (artisan) {
+        if (selectedProduct) {
             try {
-                await axios.put(`${process.env.REACT_APP_BACKEND_URL}/artisans/${artisan.id}/products`, { products: artisan.products });
-                alert('Products updated successfully');
+                await axios.put(`${process.env.REACT_APP_BACKEND_URL}/products/${selectedProduct.id}`, selectedProduct);
+                alert('Product updated successfully');
+                setSelectedProduct(null);
+                // Refresh artisan data to reflect changes
+                const response = await axios.get<{ data: Artisan }>(`${process.env.REACT_APP_BACKEND_URL}/artisans/${userId}`);
+                setArtisan(response.data.data);
             } catch (err) {
-                console.error('Error updating products:', err);
-                alert('Failed to update products');
+                console.error('Error updating product:', err);
+                alert('Failed to update product');
             }
         }
     };
@@ -101,10 +98,30 @@ const EditPage: React.FC = () => {
         try {
             await axios.post(`${process.env.REACT_APP_BACKEND_URL}/artisans/${artisan?.id}/products`, newProduct);
             alert('New product created successfully');
-            setNewProduct({ id: 0, name: '', description: '', price: 0, artisan_id: artisan?.id || 0 });
+            setNewProduct({ id: 0, name: '', description: '', price: 0, artisanID: artisan?.id || 0 });
+            // Refresh artisan data to reflect changes
+            const response = await axios.get<{ data: Artisan }>(`${process.env.REACT_APP_BACKEND_URL}/artisans/${userId}`);
+            setArtisan(response.data.data);
         } catch (err) {
             console.error('Error creating new product:', err);
             alert('Failed to create new product');
+        }
+    };
+
+    const handleProductSelect = (product: Product) => {
+        setSelectedProduct(product);
+    };
+
+    const handleDeleteProduct = async (productId: number) => {
+        try {
+            await axios.delete(`${process.env.REACT_APP_BACKEND_URL}/products/${productId}`);
+            alert('Product deleted successfully');
+            // Refresh artisan data to reflect changes
+            const response = await axios.get<{ data: Artisan }>(`${process.env.REACT_APP_BACKEND_URL}/artisans/${userId}`);
+            setArtisan(response.data.data);
+        } catch (err) {
+            console.error('Error deleting product:', err);
+            alert('Failed to delete product');
         }
     };
 
@@ -155,16 +172,6 @@ const EditPage: React.FC = () => {
                     />
                 </div>
                 <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-700">Picture URL</label>
-                    <input 
-                        type="text" 
-                        name="picture" 
-                        value={artisan.picture} 
-                        onChange={handleProfileChange} 
-                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-                    />
-                </div>
-                <div className="mb-4">
                     <label className="block text-sm font-medium text-gray-700">Biography</label>
                     <input 
                         name="biography" 
@@ -182,48 +189,68 @@ const EditPage: React.FC = () => {
             </form>
 
             <h1 className="text-2xl font-bold mb-4">Edit Products</h1>
-            <form onSubmit={handleProductSubmit} className="mb-8">
-                {artisan.products.map((product, index) => (
-                    <div key={product.id} className="mb-4">
-                        <div className="mb-2">
-                            <label className="block text-sm font-medium text-gray-700">Name</label>
-                            <input 
-                                type="text" 
-                                name="name" 
-                                value={product.name} 
-                                onChange={(e) => handleProductChange(index, e)} 
-                                className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-                            />
+            <ul className="mb-4">
+                {artisan.products.map((product) => (
+                    <li key={product.id} className="mb-2 flex justify-between items-center">
+                        <span>{product.name}</span>
+                        <div>
+                            <button 
+                                className="text-blue-500 mr-2" 
+                                onClick={() => handleProductSelect(product)}
+                            >
+                                Edit
+                            </button>
+                            <button 
+                                className="text-red-500" 
+                                onClick={() => handleDeleteProduct(product.id)}
+                            >
+                                Delete
+                            </button>
                         </div>
-                        <div className="mb-2">
-                            <label className="block text-sm font-medium text-gray-700">Description</label>
-                            <input 
-                                type="text" 
-                                name="description" 
-                                value={product.description} 
-                                onChange={(e) => handleProductChange(index, e)} 
-                                className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-                            />
-                        </div>
-                        <div className="mb-2">
-                            <label className="block text-sm font-medium text-gray-700">Price</label>
-                            <input 
-                                type="number" 
-                                name="price" 
-                                value={product.price} 
-                                onChange={(e) => handleProductChange(index, e)} 
-                                className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-                            />
-                        </div>
-                    </div>
+                    </li>
                 ))}
-                <button 
-                    type="submit" 
-                    className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
-                >
-                    Save Products
-                </button>
-            </form>
+            </ul>
+
+            {selectedProduct && (
+                <form onSubmit={handleProductSubmit} className="mb-8">
+                    <div className="mb-4">
+                        <label className="block text-sm font-medium text-gray-700">Name</label>
+                        <input 
+                            type="text" 
+                            name="name" 
+                            value={selectedProduct.name} 
+                            onChange={handleProductChange} 
+                            className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+                        />
+                    </div>
+                    <div className="mb-4">
+                        <label className="block text-sm font-medium text-gray-700">Description</label>
+                        <input 
+                            type="text" 
+                            name="description" 
+                            value={selectedProduct.description} 
+                            onChange={handleProductChange} 
+                            className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+                        />
+                    </div>
+                    <div className="mb-4">
+                        <label className="block text-sm font-medium text-gray-700">Price</label>
+                        <input 
+                            type="number" 
+                            name="price" 
+                            value={selectedProduct.price} 
+                            onChange={handleProductChange} 
+                            className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+                        />
+                    </div>
+                    <button 
+                        type="submit" 
+                        className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
+                    >
+                        Save Product
+                    </button>
+                </form>
+            )}
 
             <h1 className="text-2xl font-bold mb-4">Create New Product</h1>
             <form onSubmit={handleNewProductSubmit} className="mb-8">

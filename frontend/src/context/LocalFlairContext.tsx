@@ -6,7 +6,7 @@ interface Product {
   name: string;
   description: string;
   price: number;
-  artisan_id: number;
+  artisanID: number;
 }
 
 // Interface for LocalFlairProps
