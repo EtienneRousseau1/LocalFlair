@@ -89,4 +89,5 @@ After completing the installation steps, you can start using the LocalFlair appl
 ##  Video
 
 Watch the demo video to see LocalFlair in action:
-[![LocalFlair Demo](https://img.youtube.com/vi/-fTbP_buc-4/0.jpg)](https://youtu.be/-fTbP_buc-4
+
+[![LocalFlair Demo](https://img.youtube.com/vi/-fTbP_buc-4/0.jpg)](https://youtu.be/-fTbP_buc-4)
