@@ -1,6 +1,6 @@
 module github.com/EtienneRousseau1/go-serverless
 
-go 1.22.1
+go 1.19
 
 require (
 	github.com/gofiber/fiber/v2 v2.52.4
