@@ -83,9 +83,10 @@ After completing the installation steps, you can start using the LocalFlair appl
 
 - **Etienne Rousseau**  
   3rd Year, UC Davis  
-  Email: [erousseau@ucdavis.edu](mailto:erousseau@ucdavis.edu)  
+  Email: [erousseau@ucdavis.edu](mailto:erousseau@ucdavis.edu)
   GitHub: [EtienneRousseau1](https://github.com/EtienneRousseau1)
 
-## Video
+##  Video
 
-
+Watch the demo video to see LocalFlair in action:
+[![LocalFlair Demo](https://img.youtube.com/vi/-fTbP_buc-4/0.jpg)](https://youtu.be/-fTbP_buc-4
